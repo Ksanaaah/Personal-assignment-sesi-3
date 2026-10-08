@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflecting Journal Sesi 3: Menata Ulang Langkah yang Sempat Hilang Arah</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors: {
+    brand: { 50:'#f0fdf4',100:'#dcfce7',500:'#10b981',600:'#059669',700:'#047857',800:'#065f46',900:'#064e3b' },
+    sand: { 50:'#fbfaf7',100:'#f6f4ee',200:'#ece7db',800:'#453f35' },
+    accent: { amber:'#d97706', gold:'#b45309' }
+  },
+  fontFamily: { serif:['Georgia','Cambria','serif'], sans:['Inter','system-ui','sans-serif'] }
+} } }
+</script>
+<style>
+  @media print {
+    body { background:#fff !important; color:#111827 !important; font-size:11pt; }
+    .no-print { display:none !important; }
+    .card-print { border:1px solid #d1d5db !important; box-shadow:none !important; break-inside:avoid; margin-bottom:1.25rem !important; }
+    textarea, input[type="text"] { border:1px solid #e5e7eb !important; resize:none; overflow:visible; background:transparent !important; }
+  }
+  /* Wadah render PDF: lebar tetap 1024px */
+  #pdf-container { position:absolute; top:0; left:0; width:1024px; background:#fff; z-index:-1; pointer-events:none; }
+</style>
+</head>
+<body class="bg-sand-50 text-slate-800 font-sans antialiased min-h-screen">
+
+<header class="no-print sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-sand-200 shadow-sm">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-brand-700 text-white font-bold text-sm tracking-wider shadow">AMI</span>
+      <div>
+        <h1 class="text-sm sm:text-base font-semibold text-slate-900 leading-tight">Digital Worksheet: Sesi 3</h1>
+        <p class="text-xs text-brand-700 font-medium">Re-Anchor the Life: Menata Ulang Langkah yang Sempat Hilang Arah</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span id="saveStatus" class="text-xs text-slate-500 hidden sm:inline-flex items-center gap-1">Tersimpan otomatis</span>
+      <button onclick="resetForm()" class="px-3 py-1.5 text-xs text-rose-700 hover:bg-rose-50 border border-rose-200 rounded-lg transition">Reset</button>
+      <button onclick="window.print()" class="px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-100 border border-slate-200 rounded-lg transition">Cetak</button>
+      <button id="btnPdf" class="px-4 py-1.5 text-xs sm:text-sm font-medium bg-brand-700 hover:bg-brand-800 text-white rounded-lg shadow-sm flex items-center gap-1.5 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"/></svg>
+        <span>Unduh PDF</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+
+  <div class="bg-white rounded-2xl p-6 sm:p-8 border border-sand-200 shadow-sm mb-8 card-print">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-sand-200 pb-6 mb-6">
+      <div>
+        <span class="inline-block px-3 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-semibold tracking-wide uppercase mb-2">Program Muslim Growth • Safe Reflective Space</span>
+        <h2 class="text-2xl sm:text-3xl font-serif font-bold text-slate-900 leading-snug">Personal Assignment &amp; Reflection Journal</h2>
+        <p class="text-slate-600 text-sm mt-1">Sesi 3: "Menata Ulang Langkah yang Sempat Hilang Arah" (Netral &rarr; Positif/Growth)</p>
+      </div>
+      <div class="text-left sm:text-right text-xs text-slate-500 bg-sand-100 p-3 rounded-xl border border-sand-200">
+        <p class="font-semibold text-slate-700">Prinsip Jangkar Tertinggi:</p>
+        <p class="italic text-slate-600 font-serif">"From Allah to Allah, billah, fillah."</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nama / Panggilan Akrab</label>
+        <input type="text" id="userName" placeholder="cth: Ridha / Mas Nan / Fia" class="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-sand-50" oninput="autoSave()">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Peran / Transisi Saat Ini</label>
+        <input type="text" id="userRole" placeholder="cth: Profesional / IRT / Fresh Grad" class="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-sand-50" oninput="autoSave()">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Tanggal Pengisian</label>
+        <input type="text" id="journalDate" class="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-sand-50" oninput="autoSave()">
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-gradient-to-r from-emerald-800 to-teal-900 text-white rounded-2xl p-6 sm:p-7 shadow-sm mb-8 card-print">
+    <div class="flex items-start gap-4">
+      <div class="w-10 h-10 rounded-full bg-emerald-700 flex items-center justify-center shrink-0 text-xl font-serif">⚓</div>
+      <div>
+        <h3 class="text-lg font-serif font-bold text-amber-200">Hakikat Puncak Perjalanan: Re-Anchor</h3>
+        <p class="text-sm text-emerald-100 leading-relaxed mt-1">
+          Sahabatku, di Sesi 1 kamu telah melepas cerita palsu masa lalu (<em>Unpack the Wound</em>), di Sesi 2 kamu telah menyatukan akal dan nuranimu (<em>Coherent Heart</em>). Di Sesi 3 ini, saatnya menambatkan kemudi pada batu karang yang tak pernah goyah: <strong>Ridha Allah</strong>. Hidup tenang bukan saat dunia aman dari ombak, melainkan saat jangkar jiwamu tidak bertumpu pada fana.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGKAH 1 -->
+  <section class="bg-white rounded-2xl p-6 sm:p-7 border border-sand-200 shadow-sm mb-8 card-print">
+    <div class="flex items-center gap-3 mb-3 border-b border-sand-200 pb-3">
+      <span class="w-7 h-7 rounded-full bg-brand-700 text-white font-bold text-xs flex items-center justify-center shrink-0">1</span>
+      <div>
+        <h3 class="text-base sm:text-lg font-bold text-slate-900">Langkah 1: Petakan di Mana Jangkarmu Berada Hari Ini (Anchor Audit)</h3>
+        <p class="text-xs text-slate-500">Tingkat Kesulitan: Paling Mudah • Prinsip Anchor Theory</p>
+      </div>
+    </div>
+    <div class="bg-brand-50/60 rounded-xl p-3.5 text-xs text-slate-700 mb-4 border border-brand-100 space-y-1">
+      <p><strong>Maksudnya:</strong> Mengenali secara sadar apa dermaga fana yang selama ini Anda jadikan syarat mutlak kedamaian hati.</p>
+      <p><strong>Contohnya:</strong> Bergantung pada pujian mertua, validasi pencapaian kerja, kepastian saldo rekening, atau status jodoh/anak.</p>
+      <p><strong>Pentingnya:</strong> Kapal tidak akan bisa berlayar maju jika ia masih tertambat tanpa sadar di karang yang rapuh.</p>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1">A. Kuadran mana yang selama ini paling sering mengombang-ambingkan ketenangan batinmu? (Pilih satu atau lebih):</label>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <label class="flex items-center gap-2 p-2.5 rounded-lg border border-slate-200 hover:bg-sand-50 cursor-pointer"><input type="checkbox" id="anchorMateri" class="rounded text-brand-600 focus:ring-brand-500" onchange="autoSave()"><span><strong>Materi (Materials):</strong> Saldo, omzet, status karier, kepemilikan aset.</span></label>
+          <label class="flex items-center gap-2 p-2.5 rounded-lg border border-slate-200 hover:bg-sand-50 cursor-pointer"><input type="checkbox" id="anchorMakhluk" class="rounded text-brand-600 focus:ring-brand-500" onchange="autoSave()"><span><strong>Pengakuan Makhluk (Others):</strong> Pasangan, orang tua, mertua, rekan kerja.</span></label>
+          <label class="flex items-center gap-2 p-2.5 rounded-lg border border-slate-200 hover:bg-sand-50 cursor-pointer"><input type="checkbox" id="anchorEgo" class="rounded text-brand-600 focus:ring-brand-500" onchange="autoSave()"><span><strong>Ego Sendiri (Self):</strong> "Harus sempurna", gengsi, kepintaran, rencana mutlakku.</span></label>
+          <label class="flex items-center gap-2 p-2.5 rounded-lg border border-slate-200 hover:bg-sand-50 cursor-pointer"><input type="checkbox" id="anchorNilai" class="rounded text-brand-600 focus:ring-brand-500" onchange="autoSave()"><span><strong>Jangkar Sejati (Virtues/God):</strong> Ridha Allah, ketakwaan, kebermanfaatan peran.</span></label>
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1">B. Pengakuan Jujur: Tuliskan secara spesifik apa atau siapa yang selama ini Anda jadikan sandaran hingga membuat Anda cemas dan rapuh:</label>
+        <textarea id="anchorStory" rows="3" placeholder="Contoh: Selama ini saya menggantungkan harga diri saya pada penerimaan mertua dan status pernikahan. Ketika suami bersikap dingin, seluruh hidup saya rasanya runtuh seketika..." class="w-full text-sm p-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-sand-50" oninput="autoSave()"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANGKAH 2 -->
+  <section class="bg-white rounded-2xl p-6 sm:p-7 border border-sand-200 shadow-sm mb-8 card-print">
+    <div class="flex items-center gap-3 mb-3 border-b border-sand-200 pb-3">
+      <span class="w-7 h-7 rounded-full bg-brand-700 text-white font-bold text-xs flex items-center justify-center shrink-0">2</span>
+      <div>
+        <h3 class="text-base sm:text-lg font-bold text-slate-900">Langkah 2: Ambil Tanggung Jawab Penuh atas Responsmu (Responsibility Shift)</h3>
+        <p class="text-xs text-slate-500">Tingkat Kesulitan: Menengah • Sikap Batin 1: Keluar dari Victim Mindset</p>
+      </div>
+    </div>
+    <div class="bg-brand-50/60 rounded-xl p-3.5 text-xs text-slate-700 mb-4 border border-brand-100 space-y-1">
+      <p><strong>Maksudnya:</strong> Menghentikan kebiasaan menyalahkan takdir, orang lain, atau masa lalu, lalu memegang 100% kendali atas respon pribadi.</p>
+      <p><strong>Contohnya:</strong> Membedakan dengan tegas antara "hal di luar kendali" (kata-kata suami, takdir anak, masa lalu) dengan "hal dalam kendaliku" (suara hatiku, ilmuku, caraku merespons).</p>
+      <p><strong>Pentingnya:</strong> Allah tidak akan mengubah nasib seseorang sampai ia mengambil tanggung jawab untuk mengubah kondisi batinnya (QS. Ar-Ra'd: 11).</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="bg-rose-50/50 p-4 rounded-xl border border-rose-200">
+        <span class="inline-block px-2 py-0.5 rounded text-[11px] font-bold bg-rose-200 text-rose-800 uppercase tracking-wide mb-2">Di Luar Kendaliku (Lepaskan)</span>
+        <p class="text-xs text-slate-600 mb-2">Tuliskan 2 hal nyata yang sering membuatmu overthinking tetapi sejatinya bukan di bawah kendalimu:</p>
+        <textarea id="outOfControl" rows="3" placeholder="1. Perilaku atau kata-kata kasar pasangan&#10;2. Penilaian orang tua terhadap pekerjaanku" class="w-full text-xs p-2.5 rounded-lg border border-rose-300 focus:outline-none focus:ring-1 focus:ring-rose-500 bg-white" oninput="autoSave()"></textarea>
+      </div>
+      <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-200">
+        <span class="inline-block px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-200 text-emerald-800 uppercase tracking-wide mb-2">Dalam Kendaliku 100% (Miliki)</span>
+        <p class="text-xs text-slate-600 mb-2">Tuliskan 2 respons tegas yang sepenuhnya berada di bawah kuasa pilihanmu hari ini:</p>
+        <textarea id="inControl" rows="3" placeholder="1. Caraku menjaga batasan emosi &amp; tidak reaktif&#10;2. Keputusanku untuk terus belajar &amp; berikhtiar tanpa meratap" class="w-full text-xs p-2.5 rounded-lg border border-emerald-300 focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-white" oninput="autoSave()"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANGKAH 3 -->
+  <section class="bg-white rounded-2xl p-6 sm:p-7 border border-sand-200 shadow-sm mb-8 card-print">
+    <div class="flex items-center gap-3 mb-3 border-b border-sand-200 pb-3">
+      <span class="w-7 h-7 rounded-full bg-brand-700 text-white font-bold text-xs flex items-center justify-center shrink-0">3</span>
+      <div>
+        <h3 class="text-base sm:text-lg font-bold text-slate-900">Langkah 3: Rumuskan 1 Aksi Mikro dalam 48 Jam ke Depan (Hope in Action)</h3>
+        <p class="text-xs text-slate-500">Tingkat Kesulitan: Menantang • Sikap Batin 2: Memecah Kelumpuhan Bertindak</p>
+      </div>
+    </div>
+    <div class="bg-brand-50/60 rounded-xl p-3.5 text-xs text-slate-700 mb-4 border border-brand-100 space-y-1">
+      <p><strong>Maksudnya:</strong> Jangan menunggu rencana 5 tahun beres. Tentukan SATU tindakan nyata kecil yang bisa tuntas dalam 24–48 jam.</p>
+      <p><strong>Contohnya:</strong> Mengirim 1 pesan negosiasi, merapikan meja kerja, mendaftar sertifikasi, atau berbicara empat mata dengan tenang.</p>
+      <p><strong>Pentingnya:</strong> Tindakan kecil menyembuhkan ketakutan (<em>action cures fear</em>) dan mengaktifkan kembali rasa berdaya (<em>self-efficacy</em>).</p>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1">A. Pernyataan Aksi Mikro 48 Jam (Gunakan kata kerja aktif, spesifik, dan ada tenggat waktunya):</label>
+        <div class="relative">
+          <span class="absolute left-3.5 top-3 text-slate-400 font-bold text-xs">AKSI:</span>
+          <input type="text" id="microAction" placeholder="Dalam 48 jam ke depan (sebelum hari Selasa malam), saya akan..." class="w-full text-sm pl-16 pr-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-sand-50" oninput="autoSave()">
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div><label class="block text-xs font-semibold text-slate-600 mb-1">Kapan Tepatnya Dikerjakan?</label><input type="text" id="actionWhen" placeholder="cth: Besok pagi pukul 09.00" class="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 bg-sand-50" oninput="autoSave()"></div>
+        <div><label class="block text-xs font-semibold text-slate-600 mb-1">Di Mana Lokasinya?</label><input type="text" id="actionWhere" placeholder="cth: Ruang kerja / Meja makan" class="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 bg-sand-50" oninput="autoSave()"></div>
+        <div><label class="block text-xs font-semibold text-slate-600 mb-1">Bukti Selesainya Apa?</label><input type="text" id="actionEvidence" placeholder="cth: Email terkirim / Catatan selesai" class="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 bg-sand-50" oninput="autoSave()"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANGKAH 4 -->
+  <section class="bg-white rounded-2xl p-6 sm:p-7 border border-sand-200 shadow-sm mb-8 card-print">
+    <div class="flex items-center gap-3 mb-3 border-b border-sand-200 pb-3">
+      <span class="w-7 h-7 rounded-full bg-brand-700 text-white font-bold text-xs flex items-center justify-center shrink-0">4</span>
+      <div>
+        <h3 class="text-base sm:text-lg font-bold text-slate-900">Langkah 4: Jalankan Tanpa Menegosiasikan Rasa Takut (Fear Dissolver)</h3>
+        <p class="text-xs text-slate-500">Tingkat Kesulitan: Sulit • Mengantisipasi Sabotase Inner Critic</p>
+      </div>
+    </div>
+    <div class="bg-brand-50/60 rounded-xl p-3.5 text-xs text-slate-700 mb-4 border border-brand-100 space-y-1">
+      <p><strong>Maksudnya:</strong> Sadari bisikan keraguan saat hendak melangkah, lalu batalkan keraguan tersebut dengan kesadaran tauhid.</p>
+      <p><strong>Contohnya:</strong> Saat jemari ragu mengirim lamaran atau pesan klarifikasi, sadari bahwa rasa gugup adalah sinyal pertumbuhan.</p>
+      <p><strong>Pentingnya:</strong> Keberanian sejati bukan ketiadaan rasa takut, melainkan keyakinan bahwa perintah Allah dan nilai bertumbuh jauh lebih utama dibanding kenyamanan zona pasif.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1">Bisikan Sabotase yang Muncul di Kepala:</label>
+        <textarea id="sabotageVoice" rows="3" placeholder="Contoh: 'Bagaimana kalau ditolak lagi? Nanti kamu malu dan terlihat bodoh...'" class="w-full text-xs p-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500 bg-sand-50" oninput="autoSave()"></textarea>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1">Kalimat Peneguh Keberanian (Truth Anchor):</label>
+        <textarea id="truthAnchor" rows="3" placeholder="Contoh: 'Tugasku adalah melangkah dengan adab dan ikhtiar. Penilaian manusia bukan penentu masa depanku. Bismillah, melangkah!'" class="w-full text-xs p-3 rounded-lg border border-emerald-300 focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-emerald-50/30" oninput="autoSave()"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANGKAH 5 -->
+  <section class="bg-white rounded-2xl p-6 sm:p-7 border border-sand-200 shadow-sm mb-8 card-print">
+    <div class="flex items-center gap-3 mb-3 border-b border-sand-200 pb-3">
+      <span class="w-7 h-7 rounded-full bg-brand-700 text-white font-bold text-xs flex items-center justify-center shrink-0">5</span>
+      <div>
+        <h3 class="text-base sm:text-lg font-bold text-slate-900">Langkah 5: Tundukkan Ego dan Serahkan Kendali Penuh pada-Nya (Humility Surrender)</h3>
+        <p class="text-xs text-slate-500">Tingkat Kesulitan: Paling Sulit • Sikap Batin 3: Maqam Radhiyatan Mardhiyyah</p>
+      </div>
+    </div>
+    <div class="bg-brand-50/60 rounded-xl p-3.5 text-xs text-slate-700 mb-4 border border-brand-100 space-y-1">
+      <p><strong>Maksudnya:</strong> Melepaskan arogansi mental yang merasa diri harus bisa mengatur akhir takdir. Ikhtiar sekuat tenaga, lalu pasrah sebenar-benarnya.</p>
+      <p><strong>Contohnya:</strong> Berhenti memaksa agar orang harus bersikap baik atau agar bisnis langsung sukses dalam semalam.</p>
+      <p><strong>Pentingnya:</strong> Tanpa humility, keberhasilan melahirkan arogansi, dan kegagalan melahirkan keputusasaan (<em>hopelessness</em>).</p>
+    </div>
+    <div class="bg-sand-100 rounded-xl p-4 sm:p-5 border border-sand-200 space-y-3">
+      <p class="text-xs font-semibold text-slate-800 uppercase tracking-wider">Ikrar &amp; Doa Penyerahan Kendali (Tuliskan dengan segenap kerendahan hati):</p>
+      <div class="font-serif italic text-slate-700 text-sm leading-relaxed border-l-4 border-brand-600 pl-4 py-1">
+        "Ya Allah, ikhtiarku telah kutunaikan semampuku. Aku melepaskan tuntutan agar duniaku serba pasti. Jikapun jalan ini Kau mudahkan, aku bersyukur; jikapun Kau palingkan, aku ridha karena Engkau sebaik-baik Penata Rencana. Jiwaku bersandar hanya pada-Mu."
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-600 mb-1">Tuliskan Doa Personal Penyerahanmu Sendiri:</label>
+        <textarea id="personalDua" rows="3" placeholder="Tuliskan munajat pribadimu di sini..." class="w-full text-sm p-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white" oninput="autoSave()"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- PADLET -->
+  <section class="bg-white rounded-2xl p-6 sm:p-7 border border-sand-200 shadow-sm mb-8 card-print">
+    <div class="flex items-center justify-between mb-4 border-b border-sand-200 pb-3">
+      <div>
+        <h3 class="text-base sm:text-lg font-bold text-slate-900">Papan Komitmen: 3 Kolom Padlet Board</h3>
+        <p class="text-xs text-slate-500">Salinan komitmen akhir untuk diposting pada Padlet kelas Sesi 3</p>
+      </div>
+      <span class="hidden sm:inline-block px-2.5 py-1 rounded bg-amber-100 text-amber-800 text-xs font-semibold">Padlet Mirror</span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="border border-emerald-200 rounded-xl p-4 bg-emerald-50/40">
+        <div class="flex items-center gap-2 mb-2 text-emerald-800 font-bold text-xs"><span class="w-5 h-5 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[10px]">1</span>Jangkar Spiritual Baru</div>
+        <p class="text-[11px] text-slate-500 mb-2">Nama Allah / Nilai luhur yang jadi poros sandaranmu saat ini:</p>
+        <input type="text" id="padletCol1" placeholder="cth: Al-Wakil (Maha Pemelihara)" class="w-full text-xs p-2 rounded-lg border border-emerald-300 bg-white" oninput="autoSave()">
+      </div>
+      <div class="border border-blue-200 rounded-xl p-4 bg-blue-50/40">
+        <div class="flex items-center gap-2 mb-2 text-blue-800 font-bold text-xs"><span class="w-5 h-5 rounded-full bg-blue-700 text-white flex items-center justify-center text-[10px]">2</span>Aksi Nyata 48 Jam</div>
+        <p class="text-[11px] text-slate-500 mb-2">Satu langkah kecil konkret tanpa kompromi:</p>
+        <input type="text" id="padletCol2" placeholder="cth: Hubungi calon mitra usaha" class="w-full text-xs p-2 rounded-lg border border-blue-300 bg-white" oninput="autoSave()">
+      </div>
+      <div class="border border-purple-200 rounded-xl p-4 bg-purple-50/40">
+        <div class="flex items-center gap-2 mb-2 text-purple-800 font-bold text-xs"><span class="w-5 h-5 rounded-full bg-purple-700 text-white flex items-center justify-center text-[10px]">3</span>Humility &amp; Tawakal</div>
+        <p class="text-[11px] text-slate-500 mb-2">Hal di luar kendali yang diikhlaskan pada Allah:</p>
+        <input type="text" id="padletCol3" placeholder="cth: Hasil closing &amp; respon orang lain" class="w-full text-xs p-2 rounded-lg border border-purple-300 bg-white" oninput="autoSave()">
+      </div>
+    </div>
+  </section>
+
+  <div class="border-t border-sand-200 pt-6 mt-8 text-center text-xs text-slate-500 card-print">
+    <p class="font-serif italic text-slate-600 text-sm">"Perjalanan kembali menemukan jati diri telah usai di ruang kelas, namun sejatinya baru dimulai di setiap detak langkah keseharianmu."</p>
+    <p class="mt-2 text-slate-400">Program Kembali Menemukan Jati Diri • Modul Refleksi Mandiri Sesi 3 • Hak Cipta Hakiki untuk Pertumbuhan Jiwa</p>
+  </div>
+</main>
+
+<script>
+const formFields = ['userName','userRole','journalDate','anchorStory','outOfControl','inControl','microAction','actionWhen','actionWhere','actionEvidence','sabotageVoice','truthAnchor','personalDua','padletCol1','padletCol2','padletCol3'];
+const checkboxFields = ['anchorMateri','anchorMakhluk','anchorEgo','anchorNilai'];
+
+function lsGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function lsSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
+
+window.addEventListener('DOMContentLoaded', () => {
+  formFields.forEach(id => { const v = lsGet('sesi3_'+id); const el = document.getElementById(id); if (v !== null && el) el.value = v; });
+  checkboxFields.forEach(id => { const v = lsGet('sesi3_'+id); const el = document.getElementById(id); if (v !== null && el) el.checked = (v === 'true'); });
+  const d = document.getElementById('journalDate');
+  if (!d.value) d.value = new Date().toLocaleDateString('id-ID', { year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('btnPdf').addEventListener('click', downloadPdf);
+});
+
+function autoSave() {
+  formFields.forEach(id => { const el = document.getElementById(id); if (el) lsSet('sesi3_'+id, el.value); });
+  checkboxFields.forEach(id => { const el = document.getElementById(id); if (el) lsSet('sesi3_'+id, el.checked); });
+  const s = document.getElementById('saveStatus');
+  if (s) { s.textContent = 'Tersimpan'; }
+}
+
+function resetForm() {
+  if (!confirm('Apakah kamu yakin ingin mengosongkan seluruh isian jurnal Sesi 3 ini?')) return;
+  formFields.forEach(id => { lsDel('sesi3_'+id); const el = document.getElementById(id); if (el && id !== 'journalDate') el.value = ''; });
+  checkboxFields.forEach(id => { lsDel('sesi3_'+id); const el = document.getElementById(id); if (el) el.checked = false; });
+  alert('Worksheet telah dibersihkan.');
+}
+
+async function downloadPdf() {
+  const btn = document.getElementById('btnPdf');
+  const original = btn.innerHTML;
+  btn.innerHTML = '<span>Memproses PDF...</span>';
+  btn.disabled = true;
+  window.scrollTo(0, 0);
+
+  const W = 1024;
+  const holder = document.createElement('div');
+  holder.id = 'pdf-container';
+  document.body.appendChild(holder);
+
+  const src = document.querySelector('main');
+  const clone = src.cloneNode(true);
+  clone.style.cssText = 'width:' + W + 'px;max-width:none;margin:0;padding:16px 24px;box-sizing:border-box;';
+  holder.appendChild(clone);
+
+  // Ganti input/textarea dengan div agar teks panjang ter-wrap penuh
+  const sf = src.querySelectorAll('input, textarea');
+  const cf = clone.querySelectorAll('input, textarea');
+  sf.forEach((s, i) => {
+    const c = cf[i];
+    if (s.type === 'checkbox') {
+      c.checked = s.checked;
+      if (s.checked) c.setAttribute('checked', 'checked');
+      return;
+    }
+    const box = document.createElement('div');
+    box.className = c.className;
+    box.classList.remove('resize-none', 'overflow-hidden');
+    box.style.cssText = 'white-space:pre-wrap;overflow-wrap:anywhere;min-height:2.5rem;';
+    box.textContent = s.value;
+    c.replaceWith(box);
+  });
+  clone.querySelectorAll('.no-print').forEach(el => el.remove());
+
+  try {
+    await document.fonts.ready;
+    await new Promise(r => setTimeout(r, 300));
+
+    const SCALE = 1.5;
+    const canvas = await html2canvas(clone, {
+      scale: SCALE, useCORS: true, backgroundColor: '#ffffff',
+      width: W, windowWidth: W, x: 0, y: 0, scrollX: 0, scrollY: 0
+    });
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const M = 10, contentW = 210 - 2 * M, contentH = 297 - 2 * M;
+    const pageHpx = Math.floor(W * contentH / contentW);
+    const totalPx = Math.round(canvas.height / SCALE);
+
+    // Titik potong aman = bagian atas tiap blok utama
+    const cTop = clone.getBoundingClientRect().top;
+    const breaks = [...clone.children].map(el => Math.round(el.getBoundingClientRect().top - cTop));
+
+    let y = 0, first = true;
+    while (y < totalPx - 2) {
+      let end = Math.min(y + pageHpx, totalPx);
+      if (end < totalPx) {
+        const ok = breaks.filter(b => b > y + 250 && b <= end);
+        if (ok.length) end = Math.max(...ok);
+      }
+      const sliceH = end - y;
+      const page = document.createElement('canvas');
+      page.width = canvas.width;
+      page.height = Math.round(sliceH * SCALE);
+      const ctx = page.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, page.width, page.height);
+      ctx.drawImage(canvas, 0, Math.round(y * SCALE), canvas.width, page.height, 0, 0, canvas.width, page.height);
+      if (!first) pdf.addPage();
+      pdf.addImage(page.toDataURL('image/jpeg', 0.95), 'JPEG', M, M, contentW, sliceH * contentW / W);
+      first = false;
+      y = end;
+    }
+    pdf.save('Jurnal-Refleksi-Sesi-3.pdf');
+  } catch (err) {
+    console.error(err);
+    alert('Terjadi kesalahan saat membuat PDF. Coba buka lewat Chrome/Safari.');
+  } finally {
+    holder.remove();
+    btn.innerHTML = original;
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
